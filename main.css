@@ -1,0 +1,23 @@
+/****** Tables *****/
+
+td, th {
+    text-align: left;
+    vertical-align: text-top;
+}
+table.framed {
+    border-collapse: collapse;
+}
+table.framed td, table.framed th {
+    border: thin solid black;
+    padding-top: 0.3em;
+    padding-bottom: 0.3em;
+    padding-left: 0.6em;
+    padding-right: 0.6em;
+}
+.resultyes {
+    background-color: green;
+}
+
+.resultno {
+    background-color: red;
+}

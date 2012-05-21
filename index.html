@@ -1,0 +1,106 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/html">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>JS Browser Check</title>
+        <link href="main.css" type="text/css" rel="stylesheet">
+        <script>
+            var isJsonAvailable = (typeof JSON === "object" && JSON !== null);
+        </script>
+        <script src="lib/jquery.min.js"></script>
+        <script src="lib/underscore-min.js"></script>
+        <script src="lib/json2-min.js"></script>
+        <script src="matrix_content.js"></script>
+        <script>
+            var supportKeys = matrix.spec[""];
+
+            var tableStart = (
+                    '<table class="framed">'
+                    + "<tr><th>Functionality</th><th>Standard</th><th>This browser</th>"
+                    + _.reduce(supportKeys, function (result, cur) { return result + "<th>" + cur + "</th>" }, "")
+                    + "</tr>"
+            );
+            var tableRow = '<tr><td><%=name%></td><td><%=version%></td><td class="<%=result==="yes"?"resultyes":"resultno"%>"><%=result%></td><% _.forEach(matrix.spec[obj.key], function (supportedVersion) { %><td><%=supportedVersion%></td><% }); %></tr>\n';
+            var tableEnd = '</table>';
+
+
+            $(document).ready(function () {
+                var rowTemplate = _.template(tableRow);
+
+                var statistics = {};
+
+                var html = "";
+                _.forEach(matrix.tests, function (test) {
+                    if (typeof test === "string") {
+                        var insideTable = (html.length > 0);
+                        if (insideTable) {
+                            html += tableEnd;
+                        }
+                        html += "<h2>"+test+"</h2>";
+                        html += tableStart;
+                    } else {
+                        var data = _.extend({}, test); // copy
+                        var result;
+                        if (test.isTypeof) {
+                            data.name = "<tt>"+test.name+"</tt>";
+                            result = typeof eval(test.name) === test.isTypeof;
+                        } else if (test.object) {
+                            data.name = "<tt>"+test.name + ": "+test.methods.join(", ")+"</tt>";
+                            result = checkMethods(test);
+                        } else {
+                            try {
+                                result = test.check();
+                            } catch (e) {
+                                result = false;
+                            }
+                        }
+                        statistics[test.key] = result;
+                        data.result = (result ? "yes" : "no");
+                        if (html.length === 0) {
+                            html = tableStart;
+                        }
+                        html += rowTemplate(data);
+                    }
+                });
+                $("#testResults").append(html);
+
+                statistics.userAgent = navigator.userAgent;
+                $("#browserStats").text(JSON.stringify(statistics, null, 4)); // TODO
+            });
+            function checkMethods(test) {
+                 var obj = test.object;
+                 var methodNames = test.methods;
+                 var methodCount = 0;
+                 _.forEach(methodNames, function (methodName) {
+                     if (typeof obj[methodName] === "function") {
+                         methodCount++;
+                     }
+                 });
+                 return methodCount === methodNames.length;
+            }
+        </script>
+    </head>
+    <body>
+        <h1>JavaScript feature matrix</h1>
+
+        This matrix tracks which JavaScript language features are supported by which browsers. There are two ways in which you can contribute:
+        <ul>
+            <li>Contribute feature tests: Is there a language feature that once caused you problems by not being supported in a browser?
+            </li>
+            <li>Contribute matrix data: There is a Google spreadsheet for managing the data. Contact me and I’ll give you access.
+            </li>
+        </ul>
+
+        Contact: <tt>axel AT rauschma DOT de</tt> or <a href="https://twitter.com/rauschma"><tt>@rauschma</tt></a>.
+
+        <div id="testResults"></div>
+
+        <h2>Acknowledgement</h2>
+
+        Much of this work is based on the page “<a href="http://kangax.github.com/es5-compat-table/">ECMAScript 5 compatibility table</a>” by <a href="https://twitter.com/kangax/">kangax</a>.
+        It provided the data for part of the matrix.
+
+        <h2>Statistics as JSON</h2>
+        <pre id="browserStats"></pre>
+    </body>
+</html>
