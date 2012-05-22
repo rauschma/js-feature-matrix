@@ -3,7 +3,7 @@
 var fs = require('fs');
 
 var text = fs.readFileSync(process.argv[2], "utf8");
-console.log("var supportTable = {");
+console.log("matrix.spec = {");
 var objEntries = [];
 text.split("\n").forEach(function (line) {
     var cells = line.split("\t");

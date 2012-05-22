@@ -1,3 +1,7 @@
+#submissionFeedback {
+    background-color: yellow;
+}
+
 /****** Tables *****/
 
 td, th {
@@ -14,10 +18,10 @@ table.framed td, table.framed th {
     padding-left: 0.6em;
     padding-right: 0.6em;
 }
-.resultyes {
+.result1 {
     background-color: green;
 }
 
-.resultno {
+.result0 {
     background-color: red;
 }

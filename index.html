@@ -12,84 +12,124 @@
         <script src="lib/json2-min.js"></script>
         <script src="matrix_content.js"></script>
         <script>
-            var supportKeys = matrix.spec[""];
+            (function (global) {
+                var supportKeys = matrix.spec[""];
 
-            var tableStart = (
-                    '<table class="framed">'
-                    + "<tr><th>Functionality</th><th>Standard</th><th>This browser</th>"
-                    + _.reduce(supportKeys, function (result, cur) { return result + "<th>" + cur + "</th>" }, "")
-                    + "</tr>"
-            );
-            var tableRow = '<tr><td><%=name%></td><td><%=version%></td><td class="<%=result==="yes"?"resultyes":"resultno"%>"><%=result%></td><% _.forEach(matrix.spec[obj.key], function (supportedVersion) { %><td><%=supportedVersion%></td><% }); %></tr>\n';
-            var tableEnd = '</table>';
+                var tableStart = (
+                        '<table class="framed">'
+                        + "<tr><th>Functionality</th><th>Standard</th><th>This browser</th>"
+                        + _.reduce(supportKeys, function (result, cur) { return result + "<th>" + cur + "</th>" }, "")
+                        + "</tr>"
+                );
+                var tableRow = '<tr><td><%=name%></td><td><%=version%></td><td class="<%=result===1?"result1":"result0"%>"><%=result%></td><% _.forEach(matrix.spec[obj.key], function (supportedVersion) { %><td><%=supportedVersion%></td><% }); %></tr>\n';
+                var tableEnd = '</table>';
 
+                $(document).ready(function () {
+                    var rowTemplate = _.template(tableRow);
 
-            $(document).ready(function () {
-                var rowTemplate = _.template(tableRow);
+                    var statistics = {};
 
-                var statistics = {};
-
-                var html = "";
-                _.forEach(matrix.tests, function (test) {
-                    if (typeof test === "string") {
-                        var insideTable = (html.length > 0);
-                        if (insideTable) {
-                            html += tableEnd;
-                        }
-                        html += "<h2>"+test+"</h2>";
-                        html += tableStart;
-                    } else {
-                        var data = _.extend({}, test); // copy
-                        var result;
-                        if (test.isTypeof) {
-                            data.name = "<tt>"+test.name+"</tt>";
-                            result = typeof eval(test.name) === test.isTypeof;
-                        } else if (test.object) {
-                            data.name = "<tt>"+test.name + ": "+test.methods.join(", ")+"</tt>";
-                            result = checkMethods(test);
-                        } else {
-                            try {
-                                result = test.check();
-                            } catch (e) {
-                                result = false;
+                    var html = "";
+                    _.forEach(matrix.tests, function (test) {
+                        if (typeof test === "string") {
+                            var insideTable = (html.length > 0);
+                            if (insideTable) {
+                                html += tableEnd;
                             }
+                            html += "<h2>"+test+"</h2>";
+                            html += tableStart;
+                        } else {
+                            var data = _.extend({}, test); // copy
+                            var resultBool;
+                            if (test.isTypeof) {
+                                data.name = "<tt>"+test.name+"</tt>";
+                                resultBool = typeof eval(test.name) === test.isTypeof;
+                            } else if (test.object) {
+                                data.name = "<tt>"+test.name + ": "+test.methods.join(", ")+"</tt>";
+                                resultBool = checkMethods(test);
+                            } else {
+                                try {
+                                    resultBool = test.check();
+                                } catch (e) {
+                                    resultBool = false;
+                                }
+                            }
+                            var resultNumber = (resultBool ? 1 : 0);
+                            statistics[test.key] = resultNumber;
+                            data.result = resultNumber;
+                            if (html.length === 0) {
+                                html = tableStart;
+                            }
+                            html += rowTemplate(data);
                         }
-                        statistics[test.key] = result;
-                        data.result = (result ? "yes" : "no");
-                        if (html.length === 0) {
-                            html = tableStart;
+                    });
+                    $("#testResults").append(html);
+
+                    $("#browserStats").text(
+                            navigator.userAgent + "\n" +
+                            JSON.stringify(statistics, null, 4));
+
+                    var autorun = (window.location.search.indexOf("autorun=1") >= 0);
+                    if (autorun) {
+                        submit();
+                    }
+                    $("#submit").click(function () {
+                        submit();
+                    });
+                    global.browserScopeSubmitted = function () {
+                        var text = (autorun ? "Autorun mode. Submitted" : "Your data has been submitted. Thank you!");
+                        $("#submissionFeedback").html(text);
+                    }
+
+                    var hasBeenSubmitted = false;
+                    function submit() {
+                        if (hasBeenSubmitted) {
+                            alert("Please reload page to submit again");
+                        } else {
+                            document.getElementById("submit").disabled = true;
+                            hasBeenSubmitted = true;
+                            submitToBrowserScope(statistics);
                         }
-                        html += rowTemplate(data);
                     }
                 });
-                $("#testResults").append(html);
 
-                statistics.userAgent = navigator.userAgent;
-                $("#browserStats").text(JSON.stringify(statistics, null, 4)); // TODO
-            });
-            function checkMethods(test) {
-                 var obj = test.object;
-                 var methodNames = test.methods;
-                 var methodCount = 0;
-                 _.forEach(methodNames, function (methodName) {
-                     if (typeof obj[methodName] === "function") {
-                         methodCount++;
-                     }
-                 });
-                 return methodCount === methodNames.length;
-            }
+                function submitToBrowserScope(statistics) {
+                    global._bTestResults = statistics;
+
+                    // Beacon the results to Browserscope.
+                    (function(document) {
+                      var testKey = 'agt1YS1wcm9maWxlcnINCxIEVGVzdBjVsNcQDA';
+                      var newScript = document.createElement('script'),
+                          firstScript = document.getElementsByTagName('script')[0];
+                      newScript.src = 'http://www.browserscope.org/user/beacon/' + testKey + '?callback=browserScopeSubmitted';
+                      firstScript.parentNode.insertBefore(newScript, firstScript);
+                    }(document));
+                }
+
+                function checkMethods(test) {
+                     var obj = test.object;
+                     var methodNames = test.methods;
+                     var methodCount = 0;
+                     _.forEach(methodNames, function (methodName) {
+                         if (typeof obj[methodName] === "function") {
+                             methodCount++;
+                         }
+                     });
+                     return methodCount === methodNames.length;
+                }
+            }(this));
         </script>
     </head>
     <body>
         <h1>JavaScript feature matrix</h1>
 
-        This matrix tracks which JavaScript language features are supported by which browsers. There are two ways in which you can contribute:
+        This matrix tracks which JavaScript language features are supported by which browsers. There are three ways in which you can contribute:
         <ul>
             <li>Contribute feature tests: Is there a language feature that once caused you problems by not being supported in a browser?
             </li>
             <li>Contribute matrix data: There is a Google spreadsheet for managing the data. Contact me and I’ll give you access.
             </li>
-            <li>Contribute your browser’s statistics: See section at the end of this page.</li>
+            <li>Submit your browser’s results: See section at the end of this page.</li>
         </ul>
         GitHub: <a href="https://github.com/rauschma/js-feature-matrix">js-feature-matrix</a>. Contact: <tt>axel AT rauschma DOT de</tt> or <a href="https://twitter.com/rauschma"><tt>@rauschma</tt></a>.
 
@@ -115,10 +155,17 @@
         This work is greatly indebted to “<a href="http://kangax.github.com/es5-compat-table/">ECMAScript 5 compatibility table</a>” by <a href="https://twitter.com/kangax/">kangax</a>,
         which inspired the structure of the table and provided some of the matrix data.
 
-        <h2>Statistics as JSON</h2>
+        <h2>Submit your results</h2>
 
-        Contribute your browser’s statistics via <a href="https://docs.google.com/spreadsheet/viewform?formkey=dEt4NERYRWFtc28xeE9QQ2pUdGhtcUE6MQ">this form</a>. If there are enough submissions, we should be able to compute the feature matrix automatically.
+        You can submit your browser’s results to <a href="http://www.browserscope.org/">BrowserScope</a>. The collected results are <a href="http://www.browserscope.org/user/tests/table/agt1YS1wcm9maWxlcnINCxIEVGVzdBjVsNcQDA?v=3&layout=simple">online</a>.
+        <p>
+        <input id="submit" value="Submit following data" type="button">
 
         <pre id="browserStats"></pre>
+
+        <p>
+
+        <div id="submissionFeedback"></div>
+
     </body>
 </html>

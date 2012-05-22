@@ -13,7 +13,7 @@ matrix.tests = [
         }
     },
     {
-        key: "Array.prototype|indexOf",
+        key: "Array.prototype:indexOf",
         name: "Array.prototype",
         version: "ES5",
         object: Array.prototype,
@@ -24,7 +24,7 @@ matrix.tests = [
         }
     },
     {
-        key: "Array.prototype|iterate",
+        key: "Array.prototype:iterate",
         name: "Array.prototype",
         version: "ES5",
         object: Array.prototype,
@@ -35,7 +35,7 @@ matrix.tests = [
         }
     },
     {
-        key: "Array.prototype|reduce",
+        key: "Array.prototype:reduce",
         name: "Array.prototype",
         version: "ES5",
         object: Array.prototype,
@@ -96,7 +96,7 @@ matrix.tests = [
         }
     },
     {
-        key: "Object|propNames",
+        key: "Object:prop_names",
         name: "Object",
         version: "ES5",
         object: Object,
@@ -107,7 +107,7 @@ matrix.tests = [
         }
     },
     {
-        key: "Object|propDesc",
+        key: "Object:prop_def",
         name: "Object",
         version: "ES5",
         object: Object,
@@ -118,7 +118,7 @@ matrix.tests = [
         }
     },
     {
-        key: "Object|protect",
+        key: "Object:protect",
         name: "Object",
         version: "ES5",
         object: Object,
@@ -265,17 +265,17 @@ matrix.tests = [
 matrix.spec = {
     '': [ 'IE', 'FF', 'Chr', 'Op', 'Saf', 'SafM', 'Andr', 'OpM' ],
     'Array.isArray': [ '', '', '', '', '', '', '', '' ],
-    'Array.prototype|indexOf': [ '', '', '', '', '', '', '', '' ],
-    'Array.prototype|iterate': [ '', '', '', '', '', '', '', '' ],
-    'Array.prototype|reduce': [ '', '', '', '', '', '', '', '' ],
+    'Array.prototype:indexOf': [ '', '', '', '', '', '', '', '' ],
+    'Array.prototype:iterate': [ '', '', '', '', '', '', '', '' ],
+    'Array.prototype:reduce': [ '', '', '', '', '', '', '', '' ],
     'Date.now': [ '', '', '', '', '', '', '', '' ],
     'Date.prototype.toISOString': [ '', '', '', '', '', '', '', '' ],
     'Function.prototype.bind': [ '', '', '', '', '5.1.4', 'no (5.1)', '', '' ],
     'Object.create': [ '9', '4', '7', '12', '5', '', '', '' ],
     'Object.getPrototypeOf': [ '9', '3.5', '7', '12', '5', '', '', '' ],
-    'Object|propNames': [ '', '', '', '', '', '', '', '' ],
-    'Object|propDesc': [ '', '', '', '', '', '', '', '' ],
-    'Object|protect': [ '9', '4', '7', '12', '5.1', '', '', '' ],
+    'Object:prop_names': [ '', '', '', '', '', '', '', '' ],
+    'Object:prop_def': [ '', '', '', '', '', '', '', '' ],
+    'Object:protect': [ '9', '4', '7', '12', '5.1', '', '', '' ],
     'String.prototype.trim': [ '', '', '', '', '', '', '', '' ],
     'JSON': [ '', '', '', '', '', '', '', '' ],
     'strict_mode': [ '', '', '', '', '5.1', 'no (5.1)', '', '' ],
