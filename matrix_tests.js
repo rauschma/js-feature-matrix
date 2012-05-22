@@ -1,6 +1,4 @@
-var matrix = {};
-
-matrix.tests = [
+var matrixTests = [
     "Methods and functions",
     {
         key: "Array.isArray",
@@ -262,27 +260,3 @@ matrix.tests = [
         }
     }
 ];
-matrix.spec = {
-    '': [ 'IE', 'FF', 'Chr', 'Op', 'Saf', 'SafM', 'Andr', 'OpM' ],
-    'Array.isArray': [ '', '', '', '', '', '', '', '' ],
-    'Array.prototype:indexOf': [ '', '', '', '', '', '', '', '' ],
-    'Array.prototype:iterate': [ '', '', '', '', '', '', '', '' ],
-    'Array.prototype:reduce': [ '', '', '', '', '', '', '', '' ],
-    'Date.now': [ '', '', '', '', '', '', '', '' ],
-    'Date.prototype.toISOString': [ '', '', '', '', '', '', '', '' ],
-    'Function.prototype.bind': [ '', '', '', '', '5.1.4', 'no (5.1)', '', '' ],
-    'Object.create': [ '9', '4', '7', '12', '5', '', '', '' ],
-    'Object.getPrototypeOf': [ '9', '3.5', '7', '12', '5', '', '', '' ],
-    'Object:prop_names': [ '', '', '', '', '', '', '', '' ],
-    'Object:prop_def': [ '', '', '', '', '', '', '', '' ],
-    'Object:protect': [ '9', '4', '7', '12', '5.1', '', '', '' ],
-    'String.prototype.trim': [ '', '', '', '', '', '', '', '' ],
-    'JSON': [ '', '', '', '', '', '', '', '' ],
-    'strict_mode': [ '', '', '', '', '5.1', 'no (5.1)', '', '' ],
-    'getters_setters': [ '', '', '', '', '', '', '', '' ],
-    'reserved_prop_names': [ '', '', '', '', '', '', '', '' ],
-    'trailing_comma': [ '', '', '', '', '', '', '', '' ],
-    'str_index': [ '', '', '', '', '', '', '', '' ],
-    'named_func_expr': [ '', '', '', '', '', '', '', '' ],
-    'arguments.callee': [ '', '', '', '', '', '', '', '' ]
-};

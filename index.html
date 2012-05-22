@@ -10,18 +10,27 @@
         <script src="lib/jquery.min.js"></script>
         <script src="lib/underscore-min.js"></script>
         <script src="lib/json2-min.js"></script>
-        <script src="matrix_content.js"></script>
+        <script src="matrix_tests.js"></script>
+        <script src="matrix_browsers.js"></script>
         <script>
             (function (global) {
-                var supportKeys = matrix.spec[""];
+                var supportKeys = matrixBrowsers[""];
 
                 var tableStart = (
                         '<table class="framed">'
                         + "<tr><th>Functionality</th><th>Standard</th><th>This browser</th>"
-                        + _.reduce(supportKeys, function (result, cur) { return result + "<th>" + cur + "</th>" }, "")
+                        + _.reduce(supportKeys, function (result, cur) { return result + "<th title='"+cur.tooltip+"'>" + cur.title + "</th>" }, "")
                         + "</tr>"
                 );
-                var tableRow = '<tr><td><%=name%></td><td><%=version%></td><td class="<%=result===1?"result1":"result0"%>"><%=result%></td><% _.forEach(matrix.spec[obj.key], function (supportedVersion) { %><td><%=supportedVersion%></td><% }); %></tr>\n';
+                var tableRow = (
+                    '<tr>'
+                    + '<td><%=name%></td><td><%=version%></td>'
+                    + '<td class="<%=result===1?"result1":"result0"%>"><%=result%></td>'
+                    + '<% _.forEach(matrixBrowsers[obj.key], function (x) { %>'
+                    + '<td class="<%=x===1?"result1":"result0"%>"><%=x%></td>'
+                    + '<% }); %>'
+                    + '</tr>\n'
+                );
                 var tableEnd = '</table>';
 
                 $(document).ready(function () {
@@ -30,7 +39,7 @@
                     var statistics = {};
 
                     var html = "";
-                    _.forEach(matrix.tests, function (test) {
+                    _.forEach(matrixTests, function (test) {
                         if (typeof test === "string") {
                             var insideTable = (html.length > 0);
                             if (insideTable) {
@@ -123,15 +132,14 @@
     <body>
         <h1>JavaScript feature matrix</h1>
 
-        This matrix tracks which JavaScript language features are supported by which browsers. There are three ways in which you can contribute:
+        This matrix tracks which JavaScript language features are supported by which browsers. There are two ways in which you can contribute:
         <ul>
-            <li>Contribute feature tests: Is there a language feature that once caused you problems by not being supported in a browser?
-            </li>
-            <li>Contribute matrix data: There is a Google spreadsheet for managing the data. Contact me and I’ll give you access.
+            <li>Contribute feature tests: Is there a language feature that caused you problems by not being supported in a browser?
+                Let me know: <tt>axel AT rauschma DOT de</tt> or <a href="https://twitter.com/rauschma"><tt>@rauschma</tt></a>.
             </li>
             <li>Submit your browser’s results: See section at the end of this page.</li>
         </ul>
-        GitHub: <a href="https://github.com/rauschma/js-feature-matrix">js-feature-matrix</a>. Contact: <tt>axel AT rauschma DOT de</tt> or <a href="https://twitter.com/rauschma"><tt>@rauschma</tt></a>.
+        GitHub: <a href="https://github.com/rauschma/js-feature-matrix">js-feature-matrix</a>.
 
         <div id="testResults"></div>
 
@@ -152,8 +160,8 @@
 
         <h2>Acknowledgement</h2>
 
-        This work is greatly indebted to “<a href="http://kangax.github.com/es5-compat-table/">ECMAScript 5 compatibility table</a>” by <a href="https://twitter.com/kangax/">kangax</a>,
-        which inspired the structure of the table and provided some of the matrix data.
+        This work is indebted to “<a href="http://kangax.github.com/es5-compat-table/">ECMAScript 5 compatibility table</a>” by <a href="https://twitter.com/kangax/">kangax</a>,
+        which inspired the structure of the table.
 
         <h2>Submit your results</h2>
 
