@@ -88,12 +88,12 @@
                         } else {
                             document.getElementById("submit").disabled = true;
                             hasBeenSubmitted = true;
-                            submitToBrowserScope(statistics);
+                            submitToBrowserscope(statistics);
                         }
                     }
                 });
 
-                function submitToBrowserScope(statistics) {
+                function submitToBrowserscope(statistics) {
                     global._bTestResults = statistics;
 
                     // Beacon the results to Browserscope.
@@ -157,7 +157,7 @@
 
         <h2>Submit your results</h2>
 
-        You can submit your browser’s results to <a href="http://www.browserscope.org/">BrowserScope</a>. The collected results are <a href="http://www.browserscope.org/user/tests/table/agt1YS1wcm9maWxlcnINCxIEVGVzdBjVsNcQDA?v=3&layout=simple">online</a>.
+        You can submit your browser’s results to <a href="http://www.browserscope.org/">Browserscope</a>. The collected results are <a href="http://www.browserscope.org/user/tests/table/agt1YS1wcm9maWxlcnINCxIEVGVzdBjVsNcQDA?v=3&layout=simple">online</a>.
         <p>
         <input id="submit" value="Submit following data" type="button">
 
