@@ -25,3 +25,61 @@ table.framed td, table.framed th {
 .result0 {
     background-color: red;
 }
+
+
+
+
+h1 {
+	padding-top: 15px;
+	padding-left: 10px;
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+
+#testResults {
+	margin-left: 5%;
+	margin-right: 5%;
+}
+
+#heading {
+	position: relative;
+	margin-left: 8%;
+	margin-right: 5%
+}	
+
+a > tt, li > tt {
+	background-color: #ddd;
+}
+	
+h2 {
+	padding-top: 30px;
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	margin-left: 5%;
+}
+
+#testResults > h2 {
+	margin-left: 0%;
+}
+	
+#backgroundMaterial, #acknowledgement {
+	margin-left: 8%;
+}
+
+#submitResults {
+	margin-left: 8%;
+	margin-bottom: 40px;
+}
+
+#submit {
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+
+#browserStats {
+	background-color: #ddd;
+	margin-right: 8%;
+}
+
+a:link {
+	text-decoration: none;
+}
+	
