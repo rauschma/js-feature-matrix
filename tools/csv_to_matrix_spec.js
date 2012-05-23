@@ -84,7 +84,7 @@ var USER_AGENTS = [
     [ /^Chromium ([0-9]+\.[0-9]+)\.[0-9]+$/, null ],  // ignore
     [ /^Fennec (.+)$/, "Fen $1" ],
     [ /^Firefox (.+)$/, "FF $1" ],
-    [ /^IE 8 in Compatibility Mode (.+)$/, "IE 8 as $1" ],
+    [ /^IE 8 in Compatibility Mode ([0-9]+\.[0-9]+)\.[0-9]+$/, "IE 8 as $1" ],
     [ /^IE (.+)$/, "IE $1" ],
     [ /^iPad (.+)$/, "iPad $1" ],
     [ /^iPhone (.+)$/, "iPh $1" ],

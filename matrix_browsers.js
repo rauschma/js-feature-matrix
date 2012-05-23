@@ -37,7 +37,7 @@ var matrixBrowsers = {
             "tooltip": "IE 7.0"
         },
         {
-            "title": "IE 8 as 7.0.0",
+            "title": "IE 8 as 7.0",
             "tooltip": "IE 8 in Compatibility Mode 7.0.0"
         },
         {
