@@ -2,26 +2,52 @@
 
 var fs = require('fs');
 
-var FIRST_COL = 4;
 function main(text) {
-    var lines = text.split("\n");
-    var colTitles = lineToArray(lines[0]);
-    var result = { };
-    lines.slice(1).forEach(function (line) {
-        if (line.indexOf(",") < 0) return;
-        var cells = lineToArray(line);
-        var userAgent = cells[0];
-        var shortUserAgent = abbreviateUserAgent(userAgent);
+    var rowArrays = text.split("\n")
+        .filter(function (l) { return l.indexOf(",") >= 0 })
+        .map(lineToArray);
+    var colTitles = rowArrays.shift(); // use and remove first row
+    var firstTestCol = colTitles.indexOf("") + 1;
 
-        if (shortUserAgent !== null) {
-            getArraySafely(result, "").push({ title: shortUserAgent, tooltip: userAgent });
-            for(var i=FIRST_COL; i<cells.length; i++) {
-                var key = colTitles[i];
-                var value = Number(cells[i]);
-                getArraySafely(result, key).push(value); // push a string
+    var rowMaps = [];
+
+    rowArrays.forEach(function (rowArray) {
+        var rowMap = {};
+
+        rowMap.userAgent = rowArray[0];
+        rowMap.sortKey = rowMap.userAgent.toLowerCase(); // We need full version
+        rowMap.shortUserAgent = abbreviateUserAgent(rowMap.userAgent);
+
+        if (rowMap.shortUserAgent !== null) { // skip row?
+            for(var colCount=firstTestCol; colCount < rowArray.length; colCount++) {
+                var key = colTitles[colCount];
+                var value = Number(rowArray[colCount]);
+                rowMap[key] = value;
             }
+            rowMaps.push(rowMap);
         }
     });
+    var testNames = colTitles.slice(firstTestCol);
+
+    // Sort by user agent, but in reverse, so that more specific (minor) versions come first
+    // (later rows with the same major version can be skipped)
+    rowMaps.sort(function (a, b) {
+        return compareStrings(b.sortKey, a.sortKey);
+    });
+
+    var result = {};
+    var visitedAgents = {};
+
+    rowMaps.forEach(function (row) {
+        if (!visitedAgents[row.shortUserAgent]) {
+            visitedAgents[row.shortUserAgent] = true;
+            getArraySafely(result, "").unshift({ title: row.shortUserAgent, tooltip: row.userAgent });
+            testNames.forEach(function (testName) {
+                getArraySafely(result, testName).unshift(row[testName]);
+            });
+        }
+    });
+
     console.log("var matrixBrowsers = "+JSON.stringify(result, null, 4)+";");
 }
 
@@ -53,9 +79,9 @@ function abbreviateUserAgent(userAgent) {
     return foundMatch ? result : userAgent;
 }
 var USER_AGENTS = [
-    [ /^Android (.+)$/, "Andr $1" ],
+    [ /^Android ([0-9]+\.[0-9]+)\.[0-9]+$/, "Andr $1" ],
     [ /^Chrome ([0-9]+\.[0-9]+)\.[0-9]+$/, "Chr $1" ],
-    [ /^Chromium ([0-9]+\.[0-9]+)\.[0-9]+$/, null ],
+    [ /^Chromium ([0-9]+\.[0-9]+)\.[0-9]+$/, null ],  // ignore
     [ /^Fennec (.+)$/, "Fen $1" ],
     [ /^Firefox (.+)$/, "FF $1" ],
     [ /^IE 8 in Compatibility Mode (.+)$/, "IE 8 as $1" ],
@@ -87,6 +113,16 @@ function streamToString(stream, callback) {
     });
 }
 
+function compareStrings(a, b) {
+    if (a < b) {
+        return -1;
+    } else if (a === b) {
+        return 0;
+    } else {
+        return +1;
+    }
+}
+
 // Call main
 process.stdin.resume();
 streamToString(process.stdin, main);
@@ -95,6 +131,7 @@ streamToString(process.stdin, main);
 /*
 
 "useragent", "ua_rowscore_display", "ua_rowscore_1-10", "", "Array.isArray", "Array.prototype:indexOf", "Array.prototype:iterate", "Array.prototype:reduce", "Date.now", "Date.prototype.toISOString", "Function.prototype.bind", "JSON", "Object.create", "Object.getPrototypeOf", "Object:prop_def", "Object:prop_names", "Object:protect", "String.prototype.trim", "arguments.callee", "getters_setters", "named_func_expr", "reserved_prop_names", "str_index", "strict_mode", "trailing_comma "
+"Android 4.0.3", "", "0" , "" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "0" , "1"
 "Android 4.0.4", "", "0" , "" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "1" , "0" , "1"
 
 matrix.spec = {
