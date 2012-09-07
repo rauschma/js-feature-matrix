@@ -1,0 +1,7 @@
+- Trailing comma in array literals.
+- Object.prototype.hasOwnProperty
+- Regular expression features: http://xregexp.com/cross_browser/
+- Prevent assignment of read-only prototype properties and getter-only prototype properties
+  - Similar: definition if non-configurable
+- IE DontEnum bug: https://developer.mozilla.org/en-US/docs/ECMAScript_DontEnum_attribute
+- Accessing string characters via [].
