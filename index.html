@@ -1,18 +1,16 @@
-<!doctype html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>JavaScript feature matrix</title>
-        <link href="main.css" type="text/css" rel="stylesheet">
-        <script>
+        <script type="text/javascript">
             var isJsonAvailable = (typeof JSON === "object" && JSON !== null);
         </script>
+        <link href="main.css" type="text/css" rel="stylesheet">
         <script src="lib/jquery.min.js"></script>
         <script src="lib/underscore-min.js"></script>
         <script src="lib/json2-min.js"></script>
         <script src="matrix_tests.js"></script>
         <script src="matrix_browsers.js"></script>
-        <script>
+        <script type="text/javascript">
             (function (global) {
                 var supportKeys = matrixBrowsers[""];
 
@@ -75,31 +73,31 @@
                     $("#testResults").append(html);
 
                     $("#browserStats").text(
-                            navigator.userAgent + "\n" +
-                            JSON.stringify(statistics, null, 4));
+                        navigator.userAgent + "\n" +
+                        JSON.stringify(statistics, null, 4));
+
+                    var submit = function () {
+                        if (hasBeenSubmitted) {
+                            alert("Please reload page to submit again");
+                        } else {
+                            $("#submit").attr("disabled", true);
+                            hasBeenSubmitted = true;
+                            submitToBrowserscope(statistics);
+                        }
+                    };
+                    $("#submit").click(submit);
 
                     var autorun = (window.location.search.indexOf("autorun=1") >= 0);
                     if (autorun) {
                         submit();
                     }
-                    $("#submit").click(function () {
-                        submit();
-                    });
+
                     global.browserScopeSubmitted = function () {
                         var text = (autorun ? "Autorun mode. Submitted" : "Your data has been submitted. Thank you!");
                         $("#submissionFeedback").html(text);
                     }
 
                     var hasBeenSubmitted = false;
-                    function submit() {
-                        if (hasBeenSubmitted) {
-                            alert("Please reload page to submit again");
-                        } else {
-                            document.getElementById("submit").disabled = true;
-                            hasBeenSubmitted = true;
-                            submitToBrowserscope(statistics);
-                        }
-                    }
                 });
 
                 function submitToBrowserscope(statistics) {
@@ -128,6 +126,8 @@
                 }
             }(this));
         </script>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>JavaScript feature matrix</title>
     </head>
     <body>
         <h1>JavaScript feature matrix</h1>
@@ -167,10 +167,11 @@
         <h2>Submit your results</h2>
 
         You can submit your browser’s results to <a href="http://www.browserscope.org/">Browserscope</a>. The collected results are <a href="http://www.browserscope.org/user/tests/table/agt1YS1wcm9maWxlcnINCxIEVGVzdBjVsNcQDA?v=3&layout=simple">online</a>.
-        <p>
+        <p>&nbsp;</p>
+
         <input id="submit" value="Submit following data" type="button">
 
-        <p>
+        <p>&nbsp;</p>
 
         <div id="submissionFeedback"></div>
 
